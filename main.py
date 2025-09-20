@@ -1,10 +1,16 @@
-from test import plot_lap_times, plot_pitstop_strategy, export_pitstop_summary
+from src.data_loader import load_session
+from src.plots import plot_lap_times_and_tyres
 
 if __name__ == "__main__":
-    year = 2021
-    gp = "Abu Dhabi"
-    drivers = ["VER", "HAM", "SAI"]
+    from src.data_loader import load_session
+    from src.plots import plot_lap_times_and_tyres
+    import os
 
-    plot_lap_times(year, gp, drivers)
-    plot_pitstop_strategy(year, gp, drivers)
-    export_pitstop_summary(year, gp, drivers)
+    project_root = os.path.dirname(os.path.abspath(__file__))
+    save_path = os.path.join(project_root, "plots", "laps_info.png")
+
+    session = load_session(2024, 'Monza', 'R')
+    plot_lap_times_and_tyres(session, ["LEC", "VER", "HAM"], save_path=save_path)
+
+    print(f"Plot saved to {save_path}")
+
