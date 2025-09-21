@@ -1,20 +1,17 @@
+import joblib
 import fastf1 as ff1
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
-import joblib
 
 ff1.Cache.enable_cache("Cache")
 
-
 def build_dataset(year, gps, drivers):
     all_laps = []
-
     for gp in gps:
         session = ff1.get_session(year, gp, "R")
         session.load(telemetry=False, weather=False)
-
         laps = session.laps.pick_drivers(drivers).copy()
         if laps.empty:
             print(f"⚠️ No laps for {gp}, skipping...")

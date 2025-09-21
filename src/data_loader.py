@@ -8,7 +8,6 @@ ff1.Cache.enable_cache('Cache')
 ff1.plotting.setup_mpl()
 
 def load_session(year: int, gp: str, session_type: str, telemetry=False, weather=False):
-
     session = ff1.get_session(year, gp, session_type)
     session.load(telemetry=telemetry, weather=weather)
     return session

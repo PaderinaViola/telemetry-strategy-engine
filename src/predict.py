@@ -8,11 +8,9 @@ from matplotlib.lines import Line2D
 def prepare_race_data(year, gp, drivers):
     session = ff1.get_session(year, gp, "R")
     session.load(telemetry=False, weather=False)
-
     laps = session.laps.pick_drivers(drivers).copy()
     if laps.empty:
         raise ValueError(f"No laps found for {gp} in {year}")
-
     laps["LapTimeSec"] = laps["LapTime"].dt.total_seconds()
     laps["roll_avg"] = (laps.groupby("Driver")["LapTimeSec"].rolling(3, min_periods=1).mean().reset_index(level=0, drop=True))
     laps["prev_lap_time"] = laps.groupby("Driver")["LapTimeSec"].shift(1)
@@ -31,11 +29,9 @@ def predict_and_plot(year, gp, drivers, model_path="data/pitstop_model.pkl", thr
     if X is None:
         print(f"⚠️ Skipping {year} {gp} — no data to predict.")
         return
-    
     y_prob = model.predict_proba(X)[:, 1]
     y_pred = (y_prob > threshold).astype(int)
     plt.figure(figsize=(10, 6))
-
     for driver in drivers:
         drv_laps = laps[laps["Driver"] == driver]
         if drv_laps.empty:
@@ -57,14 +53,12 @@ def predict_and_plot(year, gp, drivers, model_path="data/pitstop_model.pkl", thr
         Line2D([0], [0], marker='o', color='w', markerfacecolor='green', markersize=8, label='Predicted normal'),
         Line2D([0], [0], marker='x', color='black', markersize=8, label='Actual pit')
     ]
-
     plt.legend(handles=legend_elements)
     plt.title(f"Predicted vs Actual Pit Stops ({year} {gp})")
     plt.xlabel("Lap Number")
     plt.ylabel("Driver")
     plt.tight_layout()
     plt.show()
-
 
 if __name__ == "__main__":
     year = 2024
