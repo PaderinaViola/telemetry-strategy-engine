@@ -49,3 +49,4 @@ if __name__ == "__main__":
     X, y = build_dataset(year, gps, drivers)
     print("Dataset size:", X.shape, "Pit laps:", y.sum())
     train_model(X, y)
+    
